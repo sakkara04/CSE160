@@ -55,17 +55,20 @@ function handleDrawOperationEvent() {
 
     if (operation == "add") {
         let v3 = v1.add(v2);
+
         drawVector(v3, "green");
     }
 
     if (operation == "subtract") {
         let v3 = v1.sub(v2);
+
         drawVector(v3, "green");
     }
 
     if (operation == "divide") {
         let v3 = v1.div(scalar);
         let v4 = v2.div(scalar);
+
         drawVector(v3, "green");
         drawVector(v4, "green");
     }
@@ -73,6 +76,7 @@ function handleDrawOperationEvent() {
     if (operation == "multiply") {
         let v3 = v1.mul(scalar);
         let v4 = v2.mul(scalar);
+
         drawVector(v3, "green");
         drawVector(v4, "green");
     }
@@ -121,6 +125,5 @@ function main() {
 
     ctx.fillStyle = 'rgba(0, 0, 0, 1.0)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
 }
 
