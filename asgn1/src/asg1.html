@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Assignment 1: Painting </title>
+  </head>
+
+  <body onload="main()">
+    <h1>Assignment 1: Painting</h1>
+
+    <p><strong>Name: </strong>Sharon Akkara</p>
+    <p><strong>Email: </strong>sakkara@ucsc.edu</p>
+
+    <canvas id="webgl" width="400" height="400">
+    Please use a browser that supports "canvas"
+    </canvas>
+
+    <p id="numdot"></p>
+
+    <p>
+    <button type="button" id="clear">Clear Canvas</button>
+    </p>
+
+    <p style="font-size:large">Drawing Mode:</p>
+    <p>
+    <button type="button" id="point">Point</button>
+    <button type="button" id="triangle">Triangle</button>
+    <button type="button" id="circle">Circle</button>
+    </p>
+
+    <p style="font-size:large">Shape Color:</p>
+    <p>
+    Red <input type="range" min="0" max="100" value="100" class="slider" id="redSlide">
+
+    Green <input type="range" min="0" max="100" value="100" class="slider" id="greenSlide">
+
+    Blue <input type="range" min="0" max="100" value="100" class="slider" id="blueSlide">
+    </p>
+
+    <p style="font-size:large">
+    Shape Size <input type="range" min="0" max="100" value="5" class="slider" id="sizeSlide">
+
+    Circle Segment Count <input type="range" min="0" max="100" value="5" class="slider" id="segmentSlide">
+    </p>
+    
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="Point.js"></script>
+    <script src="Triangle.js"></script>
+    <script src="Circle.js"></script>
+    <script src="asg1.js"></script>
+  </body>
+</html>
