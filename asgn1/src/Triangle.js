@@ -4,6 +4,7 @@ class Triangle {
         this.position = [0.0, 0.0, 0.0];
         this.color = [1.0, 1.0, 1.0, 1.0];
         this.size = 5.0;
+        this.vertices = [];
     }
 
     render() {
@@ -15,8 +16,14 @@ class Triangle {
 
         gl.uniform1f(u_Size, size);
 
-        var d = this.size / 200.0;
-        drawTriangle([xy[0], xy[1], xy[0] + d, xy[1], xy[0], xy[1] + d]);
+        if (this.vertices) {
+            drawTriangle(this.vertices)
+        }
+        
+        else {
+            var d = this.size / 200.0;
+            drawTriangle([xy[0], xy[1], xy[0] + d, xy[1], xy[0], xy[1] + d]);
+        }
     }
 }
 
