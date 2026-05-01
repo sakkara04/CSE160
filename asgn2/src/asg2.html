@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Assignment 2: Blocky 3D Animal </title>
+</head>
+
+<body onload="main()">
+  <h1>Assignment 2: Blocky 3D Animal</h1>
+
+  <p><strong>Name: </strong>Sharon Akkara</p>
+  <p><strong>Email: </strong>sakkara@ucsc.edu</p>
+
+  <div style="display: flex; gap: 100px;">
+    <canvas id="webgl" width="400" height="400">
+      Please use a browser that supports "canvas"
+    </canvas>
+  </div>
+
+  <p id="numdot"></p>
+
+  <p> Slider Controls for Front Left Leg:</p>
+  <p>
+    Upper Part: <input type="range" id="flUpperSlide" min="0" max="90" value="0"/>
+  </p>
+
+  <p>
+    Lower Part: <input type="range" id="flLowerSlide" min="0" max="90" value="0"/>
+  </p>
+
+  <p>
+    Foot: <input type="range" id="flFootSlide" min="0" max="90" value="0"/>
+  </p>
+
+  <p>
+    Animation <button type="button" id="animationOnButton">ON</button> <button type="button" id="animationOffButton">OFF</button>
+  </p>
+
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script src="../lib/cuon-matrix-cse160.js"></script>
+  <script src="Point.js"></script>
+  <script src="Triangle.js"></script>
+  <script src="Circle.js"></script>
+  <script src="Cube.js"></script>
+  <script src="Cone.js"></script>
+  <script src="asg2.js"></script>
+</body>
+
+</html>
