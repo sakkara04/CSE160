@@ -18,24 +18,57 @@
     </canvas>
   </div>
 
-  <p id="numdot"></p>
+  <p id="fps"></p>
 
-  <p> Slider Controls for Front Left Leg:</p>
   <p>
-    Upper Part: <input type="range" id="flUpperSlide" min="0" max="90" value="0"/>
+    Animation <button type="button" id="animationOnButton">ON</button> <button type="button" id="animationOffButton">OFF</button> -- Press Shift + Click for a surprise animation!
   </p>
 
   <p>
-    Lower Part: <input type="range" id="flLowerSlide" min="0" max="90" value="0"/>
+    X Rotation <input type="range" id="globalAngleXSlide" min="-360" max="360" value="0">
+    Y Rotation <input type="range" id="globalAngleYSlide" min="-360" max="360" value="20">
   </p>
 
-  <p>
-    Foot: <input type="range" id="flFootSlide" min="0" max="90" value="0"/>
-  </p>
+  <p style="text-decoration: underline;"> Slider Controls for Ear Joints</p>
+  <div style="display: flex; gap:25px;">
+    <p>Left Ear Joint <input type="range" id="leftEarSlide" min="-45" max="45" value="0"/></p>
+    <p>Right Ear Joint <input type="range" id="rightEarSlide" min="-45" max="45" value="0"/></p>
+  </div>
 
-  <p>
-    Animation <button type="button" id="animationOnButton">ON</button> <button type="button" id="animationOffButton">OFF</button>
-  </p>
+  <p style="text-decoration: underline;"> Slider Controls for Leg Joints</p>
+
+  <div style="display: flex; gap:25px;">
+    <div>
+      <p>Front Left Leg:</p>
+      <p>Upper Joint <input type="range" id="flUpperSlide" min="-90" max="90" value="0"/></p>
+      <p>Lower Joint <input type="range" id="flLowerSlide" min="-90" max="90" value="0"/></p>
+      <p>Foot Joint<input type="range" id="flFootSlide" min="-90" max="90" value="0"/></p>
+    </div>
+
+    <div>
+      <p>Front Right Leg:</p>
+      <p>Upper Joint <input type="range" id="frUpperSlide" min="-90" max="90" value="0"/></p>
+      <p>Lower Joint <input type="range" id="frLowerSlide" min="-90" max="90" value="0"/></p>
+      <p>Foot Joint <input type="range" id="frFootSlide" min="-90" max="90" value="0"/></p>
+    </div>
+
+    <div>
+      <p>Back Left Leg:</p>
+      <p>Upper Joint <input type="range" id="blUpperSlide" min="-90" max="90" value="0"/></p>
+      <p>Lower Joint <input type="range" id="blLowerSlide" min="-90" max="90" value="0"/></p>
+      <p>Foot Joint <input type="range" id="blFootSlide" min="-90" max="90" value="0"/></p>
+    </div>
+
+    <div>
+      <p>Back Right Leg:</p>
+      <p>Upper Joint <input type="range" id="brUpperSlide" min="-90" max="90" value="0"/></p>
+      <p>Lower Joint <input type="range" id="brLowerSlide" min="-90" max="90" value="0"/></p>
+      <p>Foot Joint <input type="range" id="brFootSlide" min="-90" max="90" value="0"/></p>
+    </div>
+  </div>
+
+  <p style="text-decoration: underline;"> Slider Control for Tail Joint</p>
+  <p>Tail Joint <input type="range" id="tailSlide" min="-90" max="90" value="0"/></p>
 
   <script src="../lib/webgl-utils.js"></script>
   <script src="../lib/webgl-debug.js"></script>

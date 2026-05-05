@@ -81,13 +81,33 @@ function connectVariablesToGLSL() {
 let g_globalAngleX = 0;
 let g_globalAngleY = 20;
 
+let g_leftEarAngle = 0;
+let g_rightEarAngle = 0;
+let g_tailManualAngle = 0;
+
 let g_flUpperAngle = 0;
 let g_flLowerAngle = 0;
 let g_flFootAngle = 0;
 
+let g_frUpperAngle = 0;
+let g_frLowerAngle = 0;
+let g_frFootAngle = 0;
+
+let g_blUpperAngle = 0;
+let g_blLowerAngle = 0;
+let g_blFootAngle = 0;
+
+let g_brUpperAngle = 0;
+let g_brLowerAngle = 0;
+let g_brFootAngle = 0;
+
 let g_animation = false;
 let g_pokeAnimation = false;
 let g_pokeFrame = 0;
+
+let g_bodyAngle = 0;
+let g_tailAngle = 0;
+let g_earAngle = 0;
 
 let g_flUpperWalkAngle = 0;
 let g_flLowerWalkAngle = 0;
@@ -105,10 +125,6 @@ let g_brUpperWalkAngle = 0;
 let g_brLowerWalkAngle = 0;
 let g_brFootWalkAngle = 0;
 
-let g_bodyAngle = 0;
-let g_tailAngle = 0;
-let g_earAngle = 0;
-
 let g_mouseDrag = false;
 let g_lastMouseX = 0;
 let g_lastMouseY = 0;
@@ -124,14 +140,34 @@ function addActionsForHTMLUI() {
     document.getElementById('animationOnButton').onclick = function () {g_animation = true};
     document.getElementById('animationOffButton').onclick = function () {g_animation = false};
 
-    document.getElementById('flUpperSlide').addEventListener('mousemove', function () { g_flUpperAngle = this.value; renderAllShapes(); });
-    document.getElementById('flLowerSlide').addEventListener('mousemove', function () { g_flLowerAngle = this.value; renderAllShapes(); });
-    document.getElementById('flFootSlide').addEventListener('mousemove', function () { g_flFootAngle = this.value; renderAllShapes(); });
+    document.getElementById('globalAngleXSlide').addEventListener('mousemove', function () { g_globalAngleX = -this.value; renderScene(); });
+    document.getElementById('globalAngleYSlide').addEventListener('mousemove', function () { g_globalAngleY = -this.value; renderScene(); });
+
+    document.getElementById('leftEarSlide').addEventListener('mousemove', function () { g_leftEarAngle = this.value; renderScene(); });
+    document.getElementById('rightEarSlide').addEventListener('mousemove', function () { g_rightEarAngle = this.value; renderScene(); });
+    document.getElementById('tailSlide').addEventListener('mousemove', function () { g_tailManualAngle = this.value; renderScene(); });
+
+    document.getElementById('flUpperSlide').addEventListener('mousemove', function () { g_flUpperAngle = -this.value; renderScene(); });
+    document.getElementById('flLowerSlide').addEventListener('mousemove', function () { g_flLowerAngle = -this.value; renderScene(); });
+    document.getElementById('flFootSlide').addEventListener('mousemove', function () { g_flFootAngle = -this.value; renderScene(); });
+
+    document.getElementById('frUpperSlide').addEventListener('mousemove', function () { g_frUpperAngle = -this.value; renderScene(); });
+    document.getElementById('frLowerSlide').addEventListener('mousemove', function () { g_frLowerAngle = -this.value; renderScene(); });
+    document.getElementById('frFootSlide').addEventListener('mousemove', function () { g_frFootAngle = -this.value; renderScene(); });
+
+    document.getElementById('blUpperSlide').addEventListener('mousemove', function () { g_blUpperAngle = -this.value; renderScene(); });
+    document.getElementById('blLowerSlide').addEventListener('mousemove', function () { g_blLowerAngle = -this.value; renderScene(); });
+    document.getElementById('blFootSlide').addEventListener('mousemove', function () { g_blFootAngle = -this.value; renderScene(); });
+
+    document.getElementById('brUpperSlide').addEventListener('mousemove', function () { g_brUpperAngle = -this.value; renderScene(); });
+    document.getElementById('brLowerSlide').addEventListener('mousemove', function () { g_brLowerAngle = -this.value; renderScene(); });
+    document.getElementById('brFootSlide').addEventListener('mousemove', function () { g_brFootAngle = -this.value; renderScene(); });
 
     canvas.addEventListener('mousedown', function(ev) {
         if (ev.shiftKey) {
             g_pokeAnimation = true;
             g_pokeFrame = 0;
+
             return;
         }
 
@@ -147,12 +183,20 @@ function addActionsForHTMLUI() {
 
         let dx = ev.clientX - g_lastMouseX;
         let dy = ev.clientY - g_lastMouseY;
-        g_globalAngleY += dx * 0.5;
-        g_globalAngleX += dy * 0.5;
+
+        g_globalAngleY -= dx * 0.5;
+        g_globalAngleX -= dy * 0.5;
+
+        g_globalAngleX = Math.max(-360, Math.min(360, g_globalAngleX));
+        g_globalAngleY = Math.max(-360, Math.min(360, g_globalAngleY));
+
         g_lastMouseX = ev.clientX;
         g_lastMouseY = ev.clientY;
 
-        renderAllShapes();
+        document.getElementById('globalAngleXSlide').value = -g_globalAngleX;
+        document.getElementById('globalAngleYSlide').value = -g_globalAngleY;
+
+        renderScene();
     });
 
     canvas.addEventListener('mouseup', function() {g_mouseDrag = false;});
@@ -185,13 +229,12 @@ function tick() {
         g_fps = Math.round(g_frameCount / (elapsed / 1000));
         g_frameCount = 0;
         g_fpsLastTime = now;
-        let el = document.getElementById('fps');
-        if (el) el.textContent = g_fps + ' FPS';
+        sendTextToHTML('Performance: ' + g_fps + ' FPS', 'fps');
     }
 
     updateAnimationAngles();
 
-    renderAllShapes();
+    renderScene();
 
     requestAnimationFrame(tick);
 }
@@ -225,56 +268,39 @@ function updateAnimationAngles() {
             g_pokeAnimation = false;
             g_pokeFrame     = 0;
         }
+
         return;
     }
  
     if (g_animation) {
-        let t = g_seconds;
- 
-        g_bodyAngle = 3 * Math.sin(t * 3.0);
- 
-        g_flUpperWalkAngle =  25 * Math.sin(t * 3.0);
-        g_brUpperWalkAngle =  25 * Math.sin(t * 3.0);
-        g_frUpperWalkAngle = -25 * Math.sin(t * 3.0);
-        g_blUpperWalkAngle = -25 * Math.sin(t * 3.0);
- 
-        g_flLowerWalkAngle = 12 * (0.5 - 0.5 * Math.cos(t * 6.0));
-        g_frLowerWalkAngle = 12 * (0.5 - 0.5 * Math.cos(t * 6.0));
-        g_blLowerWalkAngle = 12 * (0.5 - 0.5 * Math.cos(t * 6.0));
-        g_brLowerWalkAngle = 12 * (0.5 - 0.5 * Math.cos(t * 6.0));
+       let t = g_seconds;
 
-        g_flFootWalkAngle = 10 * Math.sin(t * 6.0);
-        g_frFootWalkAngle = 10 * Math.sin(t * 6.0 + Math.PI);
-        g_blFootWalkAngle = 10 * Math.sin(t * 6.0 + Math.PI);
-        g_brFootWalkAngle = 10 * Math.sin(t * 6.0);
- 
+        g_bodyAngle = 2 * Math.sin(t * 6.0);
+
+        let fl_br =  Math.sin(t * 3.0);
+        let fr_bl = -Math.sin(t * 3.0);
+
+        g_flUpperWalkAngle =  28 * fl_br;
+        g_brUpperWalkAngle =  28 * fl_br;
+        g_frUpperWalkAngle =  28 * fr_bl;
+        g_blUpperWalkAngle =  28 * fr_bl;
+
+        g_flLowerWalkAngle =  40 * Math.max(0, fl_br);
+        g_brLowerWalkAngle =  40 * Math.max(0, fl_br);
+        g_frLowerWalkAngle =  40 * Math.max(0, fr_bl);
+        g_blLowerWalkAngle =  40 * Math.max(0, fr_bl);
+
+        g_flFootWalkAngle =  20 * Math.max(0, fl_br);
+        g_brFootWalkAngle =  20 * Math.max(0, fl_br);
+        g_frFootWalkAngle =  20 * Math.max(0, fr_bl);
+        g_blFootWalkAngle =  20 * Math.max(0, fr_bl);
+
         g_tailAngle = 35 * Math.sin(t * 5.0);
-        g_earAngle  = 8  * Math.sin(t * 4.0);
-    } else {
-        g_bodyAngle        = 0;
-        g_flUpperWalkAngle = 0; g_frUpperWalkAngle = 0;
-        g_blUpperWalkAngle = 0; g_brUpperWalkAngle = 0;
-        g_flLowerWalkAngle = 0; g_frLowerWalkAngle = 0;
-        g_blLowerWalkAngle = 0; g_brLowerWalkAngle = 0;
-        g_flFootWalkAngle  = 0; g_frFootWalkAngle  = 0;
-        g_blFootWalkAngle  = 0; g_brFootWalkAngle  = 0;
-        g_tailAngle        = 0;
-        g_earAngle         = 0;
+        g_earAngle  =  8 * Math.sin(t * 4.0);
     }
 }
 
-function convertCoordinatesToGL(ev) {
-    var x = ev.clientX;
-    var y = ev.clientY;
-    var rect = ev.target.getBoundingClientRect();
-
-    x = ((x - rect.left) - canvas.width / 2) / (canvas.width / 2);
-    y = (canvas.height / 2 - (y - rect.top)) / (canvas.height / 2);
-
-    return ([x, y]);
-}
-
-function renderAllShapes() {
+function renderScene() {
     var globalRotMat = new Matrix4().rotate(g_globalAngleX, 1, 0, 0).rotate(g_globalAngleY, 0, 1, 0);
     gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
@@ -341,7 +367,7 @@ function renderAllShapes() {
     lOutEar.color = PINK;
     lOutEar.matrix = new Matrix4(headMat);
     lOutEar.matrix.translate(0.05, 0.63, 0.4);
-    lOutEar.matrix.rotate(g_earAngle, 0, 0, 1);
+    lOutEar.matrix.rotate(g_earAngle - g_leftEarAngle, 0, 0, 1);
     var lEarMat = new Matrix4(lOutEar.matrix);
     lOutEar.matrix.scale(0.2, 0.2, 0.1);
     lOutEar.render();
@@ -364,7 +390,7 @@ function renderAllShapes() {
     rOutEar.color = PINK;
     rOutEar.matrix = new Matrix4(headMat);
     rOutEar.matrix.translate(0.45, 0.63, 0.4);
-    rOutEar.matrix.rotate(-g_earAngle, 0, 0, 1);
+    rOutEar.matrix.rotate(-g_earAngle - g_rightEarAngle, 0, 0, 1);
     var rEarMat = new Matrix4(rOutEar.matrix);
     rOutEar.matrix.scale(0.2, 0.2, 0.1);
     rOutEar.render();
@@ -387,7 +413,7 @@ function renderAllShapes() {
     tailMatrix.translate(0.0, 0.15, 0.54);
     tailMatrix.rotate(90, 0, 0, 1);
     tailMatrix.rotate(90, 1, 0, 0);
-    tailMatrix.rotate(g_tailAngle, 1, 0, 0);
+    tailMatrix.rotate(g_tailAngle - g_tailManualAngle, 1, 0, 0);
 
     var tailSegments = 10;
     var baseRadius = 0.045;
@@ -410,57 +436,51 @@ function renderAllShapes() {
         tailMatrix.rotate(60, 0, 1, 0);
     }
 
-    function renderLeg(pivotX, pivotY, pivotZ, upperAngle, lowerAngle) {
+    function renderLeg(pivotX, pivotY, pivotZ, upperAngle, lowerAngle, footAngle) {
+        var upperPivot = new Matrix4(bodyMat);
+        upperPivot.translate(pivotX, pivotY, pivotZ);
+        upperPivot.rotate(-upperAngle, 1, 0, 0);
+        var upperPivotMat = new Matrix4(upperPivot);
+
         var upper = new Cube();
         upper.color = PINK;
-        upper.matrix = new Matrix4(bodyMat);
-        upper.matrix.translate(pivotX, pivotY, pivotZ);
-        upper.matrix.rotate(upperAngle, 1, 0, 0);
-        var upperMat = new Matrix4(upper.matrix);
-        upper.matrix.translate(-0.07, -0.14, -0.07);
-        upper.matrix.scale(0.14, 0.14, 0.14);
+        upper.matrix = new Matrix4(upperPivot);
+        upper.matrix.translate(-0.07, -0.2, -0.07);
+        upper.matrix.scale(0.18, 0.18, 0.18);
         upper.render();
- 
+
+        var lowerPivot = new Matrix4(upperPivotMat);
+        lowerPivot.translate(0, -0.13, 0);
+        lowerPivot.rotate(-lowerAngle, 1, 0, 0);
+        var lowerPivotMat = new Matrix4(lowerPivot);
+
         var lower = new Cube();
         lower.color = PINK;
-        lower.matrix = new Matrix4(upperMat);
-        lower.matrix.translate(0, -0.14, 0);
-        lower.matrix.rotate(lowerAngle, 1, 0, 0);
-        var lowerMat = new Matrix4(lower.matrix);
-        lower.matrix.translate(-0.07, -0.14, -0.07);
+        lower.matrix = new Matrix4(lowerPivot);
+        lower.matrix.translate(-0.05, -0.18, -0.05);
         lower.matrix.scale(0.14, 0.14, 0.14);
         lower.render();
 
+        var footPivot = new Matrix4(lowerPivotMat);
+        footPivot.translate(0, -0.13, 0);
+        footPivot.rotate(-footAngle, 1, 0, 0);
+
         var foot = new Cube();
         foot.color = DARK_PINK;
-        foot.matrix = new Matrix4(lowerMat);
-
-        foot.matrix.translate(0, -0.15, -0.02);
-
-        foot.matrix.rotate(
-            g_flFootWalkAngle + g_flFootAngle,
-            1, 0, 0
-        );
-
-        foot.matrix.translate(-0.07, -0.04, -0.09);
-        foot.matrix.scale(0.14, 0.05, 0.18);
-
+        foot.matrix = new Matrix4(footPivot);
+        foot.matrix.translate(-0.035, -0.1, -0.03);
+        foot.matrix.scale(0.10, 0.10, 0.10);
         foot.render();
     }
- 
-    renderLeg(
-    -0.23, -0.1, -0.13,
-    g_flUpperWalkAngle + g_flUpperAngle,
-    g_flLowerWalkAngle + g_flLowerAngle
-    );
 
-    renderLeg( 0.23, -0.1, -0.13, g_frUpperWalkAngle, g_frLowerWalkAngle);
+    renderLeg(-0.23, -0.1, -0.08, g_flUpperWalkAngle + g_flUpperAngle, g_flLowerWalkAngle + g_flLowerAngle, g_flFootWalkAngle + g_flFootAngle);
 
-    renderLeg(-0.23, -0.1,  0.48, g_blUpperWalkAngle, g_blLowerWalkAngle);
+    renderLeg( 0.19, -0.1, -0.08, g_frUpperWalkAngle + g_frUpperAngle, g_frLowerWalkAngle + g_frLowerAngle, g_frFootWalkAngle + g_frFootAngle);
 
-    renderLeg( 0.23, -0.1,  0.48, g_brUpperWalkAngle, g_brLowerWalkAngle);
+    renderLeg(-0.23, -0.1,  0.39, g_blUpperWalkAngle + g_blUpperAngle, g_blLowerWalkAngle + g_blLowerAngle, g_blFootWalkAngle + g_blFootAngle);
+
+    renderLeg( 0.19, -0.1,  0.39, g_brUpperWalkAngle + g_brUpperAngle, g_brLowerWalkAngle + g_brLowerAngle, g_brFootWalkAngle + g_brFootAngle);
 }
-
 
 function sendTextToHTML(text, htmlID) {
     var htmlElem = document.getElementById(htmlID);
