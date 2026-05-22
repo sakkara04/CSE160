@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Assignment 3: Blocky World </title>
+</head>
+
+<body onload="main()">
+  <h1>Assignment 3: Blocky World</h1>
+
+  <p><strong>Name: </strong>Sharon Akkara</p>
+  <p><strong>Email: </strong>sakkara@ucsc.edu</p>
+
+  <div style="display: flex; gap: 100px;">
+    <canvas id="webgl" width="400" height="400">
+      Please use a browser that supports "canvas"
+    </canvas>
+  </div>
+
+  <p id="fps"></p>
+
+  <p>Traverse the maze to find the pig!! </p>
+
+  <p>Manipulate the maze by right-clicking to add blocks and left-clicking to remove them.</p>
+
+  <p>
+    Animate Pig <button type="button" id="animationOnButton">ON</button> <button type="button" id="animationOffButton">OFF</button> -- Press Shift + Click for a surprise animation!
+  </p>
+
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script src="../lib/cuon-matrix-cse160.js"></script>
+  <script src="Point.js"></script>
+  <script src="Triangle.js"></script>
+  <script src="Camera.js"></script>
+  <script src="Circle.js"></script>
+  <script src="Cube.js"></script>
+  <script src="Cone.js"></script>
+  <script src="asg3.js"></script>
+</body>
+
+</html>
