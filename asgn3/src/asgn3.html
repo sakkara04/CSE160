@@ -13,19 +13,44 @@
   <p><strong>Email: </strong>sakkara@ucsc.edu</p>
 
   <div style="display: flex; gap: 100px;">
-    <canvas id="webgl" width="400" height="400">
+    <canvas id="webgl" width="650" height="400">
       Please use a browser that supports "canvas"
     </canvas>
+
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <p><strong>OH NO!!!</strong> An evil wizard cursed you and your beloved pet pig, Piggylicious, out of jealousy of your close bond. The curse transported you and Piggylicious to an alternate version of your farm where the fences make up a complex maze. The wizard hid Piggylicious deep inside of it, with the intent to seperate the two of you forever. Traverse the maze to find Piggylicious and reunite with her once again!</p>
+
+      <p style="margin-bottom: 30px;">A few tips to help you with your journey ~</p>
+
+      <div style="display: flex; flex-direction: column; gap: 30px;">
+        <div>
+          <p style="margin: 0 0 4px 0;"><strong>Navigation:</strong></p>
+            <ul style="margin: 0; padding-left: 20px;">
+              <li>Use 'W' to move forward, 'S' to move backwards, 'A' to move left and 'D' to move right</li>
+              <li>Use 'Q' to turn left and 'E' to turn right</li>
+              <li>Use your mouse to rotate your view</li>
+            </ul>
+        </div>
+
+        <div>
+          <p style="margin: 0 0 4px 0;"><strong>Manipulation:</strong></p>
+          <p style="margin: 0 0 4px 0;">Remember, you're a farmer! Use your handy farmer skills to manipulate the maze and get to Piggylicious even faster.</p>
+          <ul style="margin: 0; padding-left: 20px;">
+            <li>Left-click to add blocks in towers from bottom to top</li>
+            <li>Right-click to remove block towers from top to bottom</li>
+            <li>Move close to the desired location to add or remove blocks</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 
   <p id="fps"></p>
 
-  <p>Traverse the maze to find the pig!! </p>
-
-  <p>Manipulate the maze by right-clicking to add blocks and left-clicking to remove them.</p>
+  <p style="font-weight: bold; font-size: 20px" id="pigMessage"></p> 
 
   <p>
-    Animate Pig <button type="button" id="animationOnButton">ON</button> <button type="button" id="animationOffButton">OFF</button> -- Press Shift + Click for a surprise animation!
+    Animate Piggylicious <button type="button" id="animationOnButton">ON</button> <button type="button" id="animationOffButton">OFF</button> -- Press Shift + Click for a surprise!
   </p>
 
   <script src="../lib/webgl-utils.js"></script>
@@ -38,6 +63,7 @@
   <script src="Circle.js"></script>
   <script src="Cube.js"></script>
   <script src="Cone.js"></script>
+  <script src="Map.js"></script>
   <script src="asg3.js"></script>
 </body>
 

@@ -64,6 +64,86 @@ let u_Sampler1;
 let u_Sampler2;
 let u_whichTexture;
 
+let g_globalAngleX = 0;
+let g_globalAngleY = 20;
+
+let g_leftEarAngle = 0;
+let g_rightEarAngle = 0;
+let g_tailManualAngle = 0;
+
+let g_flUpperAngle = 0;
+let g_flLowerAngle = 0;
+let g_flFootAngle = 0;
+
+let g_frUpperAngle = 0;
+let g_frLowerAngle = 0;
+let g_frFootAngle = 0;
+
+let g_blUpperAngle = 0;
+let g_blLowerAngle = 0;
+let g_blFootAngle = 0;
+
+let g_brUpperAngle = 0;
+let g_brLowerAngle = 0;
+let g_brFootAngle = 0;
+
+let g_animation = false;
+let g_pokeAnimation = false;
+let g_pokeFrame = 0;
+
+let g_bodyAngle = 0;
+let g_tailAngle = 0;
+let g_earAngle = 0;
+
+let g_flUpperWalkAngle = 0;
+let g_flLowerWalkAngle = 0;
+let g_flFootWalkAngle = 0;
+
+let g_frUpperWalkAngle = 0;
+let g_frLowerWalkAngle = 0;
+let g_frFootWalkAngle = 0;
+
+let g_blUpperWalkAngle = 0;
+let g_blLowerWalkAngle = 0;
+let g_blFootWalkAngle = 0;
+
+let g_brUpperWalkAngle = 0;
+let g_brLowerWalkAngle = 0;
+let g_brFootWalkAngle = 0;
+
+let g_mouseDrag = false;
+let g_lastMouseX = 0;
+let g_lastMouseY = 0;
+
+let g_fps = 0;
+let g_frameCount = 0;
+let g_fpsLastTime = performance.now();
+
+let g_pigFound = false;
+
+let g_map = new Map([
+    [3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3],
+    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+    [3, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 3],
+    [3, 0, 0, 3, 4, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 3],
+    [3, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 3],
+    [3, 0, 0, 0, 0, 1, 0, 4, 3, 0, 0, 2, 0, 0, 0, 3],
+    [3, 0, 2, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 1, 0, 3],
+    [3, 0, 0, 3, 0, 0, 0, 0, 0, 1, 0, 0, 4, 0, 0, 3],
+    [3, 0, 0, 4, 0, 2, 0, 0, 0, 0, 0, 3, 4, 0, 0, 3],
+    [3, 0, 1, 0, 0, 0, 0, 0, 4, 3, 0, 0, 0, 2, 0, 3],
+    [3, 0, 0, 0, 0, 4, 0, 1, 3, 0, 0, 0, 0, 0, 0, 3], 
+    [3, 0, 3, 0, 0, 4, 0, 0, 0, 0, 2, 0, 1, 0, 0, 3],
+    [3, 0, 0, 1, 0, 0, 0, 2, 0, 0, 4, 3, 0, 0, 0, 3], 
+    [3, 0, 0, 4, 0, 2, 0, 0, 0, 1, 3, 0, 0, 0, 0, 3], 
+    [3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 3],
+    [3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3],
+]);
+
+let g_camera = new Camera();
+
+spawn();
+
 function setupWebGL() {
     // Retrieve <canvas> element
     canvas = document.getElementById('webgl');
@@ -158,64 +238,6 @@ function connectVariablesToGLSL() {
     gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
 }
 
-let g_globalAngleX = 0;
-let g_globalAngleY = 20;
-
-let g_leftEarAngle = 0;
-let g_rightEarAngle = 0;
-let g_tailManualAngle = 0;
-
-let g_flUpperAngle = 0;
-let g_flLowerAngle = 0;
-let g_flFootAngle = 0;
-
-let g_frUpperAngle = 0;
-let g_frLowerAngle = 0;
-let g_frFootAngle = 0;
-
-let g_blUpperAngle = 0;
-let g_blLowerAngle = 0;
-let g_blFootAngle = 0;
-
-let g_brUpperAngle = 0;
-let g_brLowerAngle = 0;
-let g_brFootAngle = 0;
-
-let g_animation = false;
-let g_pokeAnimation = false;
-let g_pokeFrame = 0;
-
-let g_bodyAngle = 0;
-let g_tailAngle = 0;
-let g_earAngle = 0;
-
-let g_flUpperWalkAngle = 0;
-let g_flLowerWalkAngle = 0;
-let g_flFootWalkAngle = 0;
-
-let g_frUpperWalkAngle = 0;
-let g_frLowerWalkAngle = 0;
-let g_frFootWalkAngle = 0;
-
-let g_blUpperWalkAngle = 0;
-let g_blLowerWalkAngle = 0;
-let g_blFootWalkAngle = 0;
-
-let g_brUpperWalkAngle = 0;
-let g_brLowerWalkAngle = 0;
-let g_brFootWalkAngle = 0;
-
-let g_mouseDrag = false;
-let g_lastMouseX = 0;
-let g_lastMouseY = 0;
-
-let g_fps = 0;
-let g_frameCount = 0;
-let g_fpsLastTime = performance.now();
-
-let g_armAngle = 0;
-let g_boxAngle = 0;
-
 function addActionsForHTMLUI() {
     document.getElementById('animationOnButton').onclick = function () { g_animation = true };
     document.getElementById('animationOffButton').onclick = function () { g_animation = false };
@@ -266,37 +288,37 @@ function addActionsForHTMLUI() {
     canvas.addEventListener('mouseleave', function () { g_mouseDrag = false; });
 
     canvas.addEventListener('click', function(ev) {
-        if (g_mouseMoved) {
-            return;
-        }
+        if (g_mouseMoved) return;
 
-        let x = Math.floor(g_camera.eye.elements[0] + 8);
-        let z = Math.floor(g_camera.eye.elements[2] + 8);
+        let fx = g_camera.at.elements[0] - g_camera.eye.elements[0];
+        let fz = g_camera.at.elements[2] - g_camera.eye.elements[2];
+        let len = Math.sqrt(fx*fx + fz*fz);
+        fx /= len;
+        fz /= len;
 
-        if (x >= 0 && x < 16 && z >= 0 && z < 16) {
+        let tx = Math.floor(g_camera.eye.elements[0] + fx * 2.5 + 8);
+        let tz = Math.floor(g_camera.eye.elements[2] + fz * 2.5 + 8);
 
-            if (ev.button == 0) {
-                g_map[x][z]++;
-                g_map[x][z] = Math.min(g_map[x][z], 4);
-            }
+        if (tx >= 0 && tx < 16 && tz >= 0 && tz < 16) {
+            g_map.addBlock(tx, tz);
         }
     });
 
     canvas.addEventListener('contextmenu', function(ev) {
         ev.preventDefault();
+        if (g_mouseMoved) return;
 
-        if (g_mouseMoved) {
-            return;
-        }
+        let fx = g_camera.at.elements[0] - g_camera.eye.elements[0];
+        let fz = g_camera.at.elements[2] - g_camera.eye.elements[2];
+        let len = Math.sqrt(fx*fx + fz*fz);
+        fx /= len;
+        fz /= len;
 
-        let x = Math.floor(g_camera.eye.elements[0] + 8);
-        let z = Math.floor(g_camera.eye.elements[2] + 8);
+        let tx = Math.floor(g_camera.eye.elements[0] + fx * 2.5 + 8);
+        let tz = Math.floor(g_camera.eye.elements[2] + fz * 2.5 + 8);
 
-        if (x >= 0 && x < 16 && z >= 0 && z < 16) {
-
-            g_map[x][z]--;
-
-            g_map[x][z] = Math.max(g_map[x][z], 0);
+        if (tx >= 0 && tx < 16 && tz >= 0 && tz < 16) {
+            g_map.removeBlock(tx, tz);
         }
     });
 }
@@ -408,6 +430,8 @@ function tick() {
 
     updateAnimationAngles();
 
+    checkDistanceToPig();
+
     renderScene();
 
     requestAnimationFrame(tick);
@@ -474,10 +498,25 @@ function updateAnimationAngles() {
     }
 }
 
-let g_camera = new Camera();
-g_camera.eye = new Vector3([-6, 0, -6]);
-g_camera.at  = new Vector3([0, 0, -4]);
-g_camera.up  = new Vector3([0, 1, 0]);
+function spawn() {
+    const candidates = [];
+    for (let x = 2; x < 14; x++) {
+        for (let z = 2; z < 14; z++) {
+            if (g_map.data[x][z] === 0 &&
+                g_map.data[x+1][z] === 0 &&
+                g_map.data[x-1][z] === 0 &&
+                g_map.data[x][z+1] === 0 &&
+                g_map.data[x][z-1] === 0) {
+                candidates.push([x, z]);
+            }
+        }
+    }
+
+    const [sx, sz] = candidates[Math.floor(Math.random() * candidates.length)];
+    g_camera.eye = new Vector3([sx - 8 + 0.5, 0, sz - 8 + 0.5]);
+    g_camera.at  = new Vector3([sx - 8 + 0.5, 0, sz - 8 - 0.5]);
+    g_camera.up  = new Vector3([0, 1, 0]);
+}
 
 function keydown(ev) {
     // w
@@ -511,43 +550,17 @@ function keydown(ev) {
     renderScene();
 }
 
-var g_map = [
-         [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-         [4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4],
-         [4, 0, 0, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 4],
-         [4, 0, 0, 3, 4, 0, 0, 0, 0, 0, 0, 0, 2, 1, 0, 4],
-         [4, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 4],
-         [4, 0, 0, 0, 0, 1, 0, 4, 3, 0, 0, 2, 0, 0, 0, 4],
-         [4, 0, 2, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 1, 0, 4],
-         [4, 0, 0, 3, 0, 0, 0, 0, 0, 1, 0, 0, 4, 0, 0, 4],
-         [4, 0, 0, 4, 0, 2, 0, 0, 0, 0, 0, 3, 4, 0, 0, 4],
-         [4, 0, 1, 0, 0, 0, 0, 0, 4, 3, 0, 0, 0, 2, 0, 4],
-         [4, 0, 0, 0, 0, 4, 0, 1, 3, 0, 0, 0, 0, 0, 0, 4], 
-         [4, 0, 3, 0, 0, 4, 0, 0, 0, 0, 2, 0, 1, 0, 0, 4],
-         [4, 0, 0, 1, 0, 0, 0, 2, 0, 0, 4, 3, 0, 0, 0, 4], 
-         [4, 0, 0, 4, 0, 2, 0, 0, 0, 1, 3, 0, 0, 0, 0, 4], 
-         [4, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 4],
-         [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-];
+function checkDistanceToPig() {
+    if (g_pigFound) return;
 
-function drawMap() {
-    const SIZE = 16;
-    const HALF = SIZE / 2;
+    let dx = g_camera.eye.elements[0] - 0;
+    let dz = g_camera.eye.elements[2] - 0;
+    let dist = Math.sqrt(dx * dx + dz * dz);
 
-    for (let x = 0; x < SIZE; x++) {
-        for (let z = 0; z < SIZE; z++) {
-            let height = g_map[x][z];
-            for (let y = 0; y < height; y++) {
-                var wall = new Cube();
-                wall.textureNum = 2;
-                wall.matrix.translate(
-                    x - HALF,
-                    y - 0.75,
-                    z - HALF
-                );
-                wall.render();
-            }
-        }
+    if (dist < 2.5) {
+        g_pigFound = true;
+        g_animation = true;
+        sendTextToHTML('YAY!!! You found Piggylicious 🐷', 'pigMessage');
     }
 }
 
@@ -584,7 +597,7 @@ function renderScene() {
     ground.color = [1.0, 0.0, 0.0, 1.0];
     ground.textureNum = 1;
     ground.matrix.translate(0, -0.75, 0.0);
-    ground.matrix.scale(50, 0.01, 50);
+    ground.matrix.scale(16, 0.01, 16);
     ground.matrix.translate(-0.5, 0, -0.5);
     ground.render();
 
@@ -595,7 +608,7 @@ function renderScene() {
     sky.matrix.translate(-0.5, -0.5, -0.5);
     sky.render();
 
-    drawMap();
+    g_map.render();
 
     var body = new Cube();
     body.color = PINK;
