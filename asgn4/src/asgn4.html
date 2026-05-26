@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Assignment 4: Lighting </title>
+</head>
+
+<body onload="main()">
+  <h1>Assignment 4: Lighting</h1>
+
+  <p><strong>Name: </strong>Sharon Akkara</p>
+  <p><strong>Email: </strong>sakkara@ucsc.edu</p>
+
+  <div style="display: flex; gap: 100px;">
+    <canvas id="webgl" width="650" height="400">
+      Please use a browser that supports "canvas"
+    </canvas>
+    <div>
+      <p style="margin: 0 0 4px 0;"><strong>Navigation:</strong></p>
+        <ul style="margin: 0; padding-left: 20px;">
+          <li>Use 'W' to move forward, 'S' to move backwards, 'A' to move left and 'D' to move right</li>
+          <li>Use 'Q' to turn left and 'E' to turn right</li>
+          <li>Use your mouse to rotate your view</li>
+        </ul>
+    </div>
+  </div>
+
+  <p id="fps"></p>
+
+  <div style="display:flex; gap:10px;">
+    Point Light:
+    <button type="button" id="pointLightOn">ON</button>
+    <button type="button" id="pointLightOff">OFF</button>
+
+    X-Position <input type="range", min="-250" max="250", value="0" class="slider" id="lightSlideX">
+    Y-Position <input type="range", min="-250" max="250", value="100" class="slider" id="lightSlideY">
+    Z-Position <input type="range", min="-250" max="250", value="200" class="slider" id="lightSlideZ">
+  </div>
+
+  <p>
+    Spot Light:
+    <button type="button" id="spotLightOn">ON</button>
+    <button type="button" id="spotLightOff">OFF</button>
+  </p>
+
+  <p>
+    Normals View:
+    <button type="button" id="normalOn">ON</button>
+    <button type="button" id="normalOff">OFF</button>
+  </p>
+  
+  <p>
+    Animate Piggylicious:
+    <button type="button" id="pigAnimationOnButton">ON</button> 
+    <button type="button" id="pigAnimationOffButton">OFF</button> -- Press Shift + Click for a surprise!
+  </p>
+
+  <script src="../lib/webgl-utils.js"></script>
+  <script src="../lib/webgl-debug.js"></script>
+  <script src="../lib/cuon-utils.js"></script>
+  <script src="../lib/cuon-matrix-cse160.js"></script>
+  <script src="Point.js"></script>
+  <script src="Triangle.js"></script>
+  <script src="Camera.js"></script>
+  <script src="Circle.js"></script>
+  <script src="Cube.js"></script>
+  <script src="Cone.js"></script>
+  <script src="Map.js"></script>
+  <script src="Model.js"></script>
+  <script src="Sphere.js"></script>
+  <script src="asgn4.js"></script>
+</body>
+
+</html>
