@@ -789,6 +789,7 @@ function renderScene() {
     g_bunny.matrix = new Matrix4();
     g_bunny.color = [0.55, 0.35, 0.20, 1.0];
     if (g_normalOn) g_bunny.textureNum = -3;
+    else g_bunny.textureNum = -2;
     g_bunny.matrix.translate(1.55, -0.9, 0);
     g_bunny.matrix.scale(0.2, 0.2, 0.2);
     g_bunny.matrix.rotate(270,0, 1, 0);
