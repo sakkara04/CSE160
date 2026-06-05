@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment 5: Exploring a High-Level Graphics Library</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+            padding: 10px;
+
+        }
+
+        #game-container {
+            position: relative;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+
+        #c {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 100;
+        }
+
+        .overlay.hidden {
+            display: none;
+        }
+
+        #intro h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: #ccc;
+        }
+
+        #intro p {
+            max-width: 400px;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            color: #ccc;
+        }
+
+        #intro button {
+            padding: 10px 32px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        #intro ul {
+            text-align: left;
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        #stat {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.55);
+            color: #ccc;
+            font-size: 0.9rem;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        #stat.hidden {
+            display: none;
+        }
+
+        #banner {
+            position: absolute;
+            top: 44px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 18px;
+            font-size: 0.82rem;
+            border: 1px solid #555;
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        #banner.visible {
+            opacity: 1;
+        }
+
+        #placard {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(420px, 90vw);
+            background: rgba(20, 20, 20, 0.92);
+            border: 1px solid #555;
+            padding: 16px 20px;
+            display: none;
+            z-index: 20;
+        }
+
+        #placard h3 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            color: #ccc;
+        }
+
+        #placard p {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #ccc;
+            white-space: pre-line;
+        }
+
+        #placard-close {
+            float: right;
+            background: none;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-left: 8px;
+        }
+
+        #invBar {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #444;
+            padding: 6px;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #invBar.visible {
+            opacity: 1;
+        }
+
+        .slot {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #444;
+            background: rgba(30, 30, 30, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            color: #aaa;
+            position: relative;
+        }
+
+        .slot:hover {
+            border-color: #888;
+        }
+
+        .slot.selected {
+            border-color: #ffc;
+            background: rgba(60, 50, 20, 0.9);
+        }
+
+        .slot.matched {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .slot.locked {
+            cursor: default;
+        }
+
+        .slot.locked .slot-icon,
+        .slot.locked .slot-label {
+            display: none;
+        }
+
+        .slot-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .slot-label {
+            font-size: 0.55rem;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .slot-q {
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            font-size: 0.48rem;
+            color: #666;
+            pointer-events: none;
+        }
+
+        .slot-lock {
+            font-size: 1rem;
+            opacity: 0.3;
+            display: none;
+        }
+
+        .slot.locked .slot-lock {
+            display: block;
+        }
+
+        #win h2 {
+           color: #ccc;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        #win p {
+            color: #ccc;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            text-align: center;
+            max-width: 360px;
+        }
+
+        #win button {
+            padding: 10px 28px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        #hint {
+            position: absolute;
+            top: 36px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            color: black;
+            pointer-events: none;
+            z-index: 5;
+            transition: opacity 1.5s;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        #hint.hidden {
+            display: none;
+        }
+    </style>
+    <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+
+<body>
+    <h1>Assignment 5: Exploring a High-Level Graphics Library</h1>
+    <br/>
+    <p><strong>Name: </strong>Sharon Akkara</p>
+    <p><strong>Email: </strong>sakkara@ucsc.edu</p>
+    <div id="game-container">
+    <canvas id="c"></canvas>
+
+    <div id="intro" class="overlay">
+        <h1>Ancient Artifacts Museum</h1>
+        <p>
+            Explore the museum to find all four ancient artifacts that are currently missing from their displays. 
+        </p>
+        <p>First, find and click each artifact to add it to your inventory and click the top of each pedestal to read the description of the artifact that belongs on it. Then, select an artifact in your inventory and click the top of its corresponding pedestal to put it back in its rightful place! Feel free to explore the museum once all artifacts are restored.</p>
+        <button id="start-btn">Start</button>
+    </div>
+
+    <div id="stat" class="hidden">
+        <span>Time: <strong id="stat-time">0:00</strong></span>
+        <span>Restored: <strong id="stat-restored">0</strong> / <strong id="stat-total">4</strong></span>
+        <span>Remaining: <strong id="stat-remaining">4</strong></span>
+    </div>
+    <div id="hint" class="hidden">
+        <p>
+            Click each artifact to add to inventory · Click top of pedestal to read description of artifact · Select artifact in inventory and click top of corresponding pedestal to put it back in place
+        </p>
+        <p>WASD to move · QE to turn · Mouse to rotate</p>
+    </div>
+
+    <!-- Status banner -->
+    <div id="banner"></div>
+
+    <!-- Placard -->
+    <div id="placard">
+        <button id="placard-close">✕</button>
+        <h3 id="placard-title"></h3>
+        <p id="placard-text"></p>
+    </div>
+
+    <div id="invBar"></div>
+
+
+
+
+    <!-- Win -->
+    <div id="win" class="overlay hidden">
+        <h2>Artifacts Restored!</h2>
+        <p id="win-msg"></p>
+        <button id="explore-btn">Explore</button>
+    </div>
+    </div>
+
+    <script type="module" src="asgn5.js"></script>
+</body>
+
+</html>
